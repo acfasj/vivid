@@ -1,0 +1,89 @@
+#__plugin-vivid {
+  position: relative;
+  z-index: 10000;
+}
+
+/* common */
+#__plugin-vivid .hidden {
+  display: none;
+}
+#__plugin-vivid ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+#__plugin-vivid p {
+  font-size: 18px;
+}
+
+/* app */
+#__plugin-vivid .__vivid-result {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 800px;
+  max-height: 500px;
+  overflow: auto;
+  padding: 20px;
+  border-radius: 2px;
+  background-color: #fff;
+  box-shadow: 1px 1px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* word */
+#__plugin-vivid .__vivid-word {
+}
+#__plugin-vivid .word-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#__plugin-vivid .word {
+  font-weight: bold;
+}
+#__plugin-vivid .sound span+span {
+  margin-left: 20px;
+}
+#__plugin-vivid .collins li {
+  margin: 15px 0;
+}
+#__plugin-vivid .toggle {
+  color: rgb(3, 155, 229);
+  cursor: pointer;
+}
+
+/*
+image
+https://zhuanlan.zhihu.com/p/21974139
+*/
+#__plugin-vivid .__vivid-image {
+
+}
+#__plugin-vivid .imagelist {
+  display: flex;
+  flex-wrap: wrap;
+}
+#__plugin-vivid .imagelist::after {
+  content: '';
+  flex-grow: 999999999;
+}
+#__plugin-vivid .imageitem {
+  margin: 4px;
+  /* background-color: violet; */
+  position: relative;
+  border: 1px solid #91989F;
+  border-radius: 2px;
+}
+#__plugin-vivid .imageitem i{
+  display: block;
+}
+#__plugin-vivid .imageitem img {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  vertical-align: bottom;
+}
