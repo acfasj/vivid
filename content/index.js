@@ -17,7 +17,7 @@ function appendQueryString(url, queryObj) {
   return url
 }
 
-function debounce(fn, wait = 300) {
+function debounce(fn, wait = 500) {
   let timer
 
   return function() {
@@ -43,7 +43,7 @@ async function find(word) {
 
 async function getImageList(word) {
   return fetch(
-    `http://localhost:7001/image/search?q=${encodeURIComponent(word)}`
+    `https://vivid.huanghongkai.com/image/search?q=${encodeURIComponent(word)}`
   ).then(res => res.json())
 }
 
@@ -119,7 +119,6 @@ function _normalizeWordData(data) {
     if (data.collins) {
       res.collins = data.collins[0].entry
       res.sound = data.baesInfo.symbols ? data.baesInfo.symbols[0] : {}
-      console.log(JSON.stringify( data.baesInfo.symbols[0]), '声音')
     }
     // sound
     if (data.baesInfo.symbols) {
@@ -137,32 +136,39 @@ function _normalizeWordData(data) {
 
 var vm
 ;(function render() {
+  const upgradeMeta = document.createElement('meta')
+  upgradeMeta.setAttribute('http-equiv', 'Content-Security-Policy')
+  upgradeMeta.setAttribute('content', 'upgrade-insecure-requests')
+  document.head.appendChild(upgradeMeta)
+
   const vivid = document.createElement('div')
   const vividInner = document.createElement('div')
   vivid.id = '__plugin-vivid'
+  vivid.onclick = function (e) { e.stopPropagation() }
   vivid.appendChild(vividInner)
   document.body.appendChild(vivid)
-  console.log(vivid.id, 'vivid dom')
 
   vm = new Vue({
     el: vividInner,
     template: `
     <div class="__vivid-result" v-show="show" :style="{ left: x + 'px', top: y + 'px' }">
-
       <div class="__vivi-word">
         <div class="word-wrapper" v-show="word">
-          <p class="word">{{word}}</p>
+          <div class="word">{{word}}</div>
           <div class="sound">
-            <span v-show="wordData.sound.ph_am" @mouseenter ="play($refs.amAudio)">美 [{{wordData.sound.ph_am}}]</span>
-            <span v-show="wordData.sound.ph_en" @mouseenter ="play($refs.enAudio)">英 [{{wordData.sound.ph_en}}]</span>
+            <span v-show="wordData.sound.ph_am_mp3" @mouseenter ="play($refs.amAudio)">American [{{wordData.sound.ph_am}}]</span>
+            <span v-show="wordData.sound.ph_en_mp3" @mouseenter ="play($refs.enAudio)">British [{{wordData.sound.ph_en}}]</span>
             <audio ref="amAudio" :src="wordData.sound.ph_am_mp3" class="hidden"></audio>
             <audio ref="enAudio" :src="wordData.sound.ph_en_mp3" class="hidden"></audio>
           </div>
         </div>
         <ul class="collins">
-          <li v-for="item in collins">{{item.posp}}  <p>{{item.def}}</p></li>
+          <li v-for="item in collins">
+            <p>{{item.posp}}</p>
+            <p>{{item.def}}</p>
+          </li>
         </ul>
-        <div v-show="showToggle" @click.stop="toggleAllExamples" class="toggle">{{toggleAllExamplesText}}</div>
+        <div v-show="showToggle" @click.stop="toggleAllExamples" class="toggle color-info text-right">{{toggleAllExamplesText}}</div>
         <p class="message">
           {{wordData.message}}
         </p>
@@ -172,14 +178,19 @@ var vm
         <ul class="imagelist" v-if="imageData && imageData.value">
           <li class="imageitem"
             v-for="item in imageData.value"
-            :style="{ width: (item.width * 100 / item.height) + 'px', flexGrow: item.width * 100 / item.height }"
+            :style="{ width: (item.width * 170 / item.height) + 'px', flexGrow: item.width * 170 / item.height }"
           >
             <i :style="{ paddingBottom: (item.height / item.width * 100) + '%' }"></i>
-            <img :src="item.thumbnailUrl">
+            <a :href="item.webSearchUrl" target="_blank" :title="item.name">
+              <img :src="item.thumbnailUrl" :alt="item.name">
+            </a>
           </li>
         </ul>
+        <p class="text-right">
+          <a class="color-info" :href="imageData.webSearchUrl" target="_blank">more pictures</a>
+        </p>
       </div>
-      </div>
+    </div>
     `,
     data: {
       text: '',
@@ -192,7 +203,7 @@ var vm
       imageData: {},
       x: 0,
       y: 0,
-      showAllColins: false
+      showAllColins: false,
     },
 
     computed: {
