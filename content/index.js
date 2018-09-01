@@ -64,9 +64,12 @@ function getSelectionText() {
   return text
 }
 
-document.onselectionchange = debounce(handleSelectionChange)
-document.onclick = function(e) {
+document.addEventListener('selectionchange', debounce(onSelectionChange))
+document.addEventListener('click', function (e) {
   vm.show = false
+  vm.$el.scrollTop = 0
+})
+document.addEventListener('mouseup', function (e) {
   const mouseX = e.clientX
   const mouseY = e.clientY
 
@@ -81,9 +84,9 @@ document.onclick = function(e) {
   } else {
     vm.y = window.innerHeight - CONTAINER_HEIGHT
   }
-}
+})
 
-async function handleSelectionChange() {
+async function onSelectionChange() {
   let text = getSelectionText().trim()
   let wordData, imageData
   if (text && text.length < 5000) {
