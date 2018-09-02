@@ -31,7 +31,7 @@ function debounce(fn, wait = 500) {
 }
 
 async function find(word) {
-  let url = '//www.iciba.com/index.php'
+  let url = 'https://www.iciba.com/index.php'
   url = appendQueryString(url, {
     a: 'getWordMean',
     c: 'search',
@@ -67,7 +67,6 @@ function getSelectionText() {
 document.addEventListener('selectionchange', debounce(onSelectionChange))
 document.addEventListener('click', function (e) {
   vm.show = false
-  vm.$el.scrollTop = 0
 })
 document.addEventListener('mouseup', function (e) {
   const mouseX = e.clientX
@@ -227,6 +226,16 @@ var vm
           return 'collapse'
         }
         return 'show all examples'
+      }
+    },
+
+    watch: {
+      show(newVal) {
+        // reset
+        if (!newVal) {
+          this.$el.scrollTop = 0
+          this.showAllColins = false
+        }
       }
     },
 
