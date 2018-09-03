@@ -147,6 +147,7 @@ var vm
   const vividInner = document.createElement('div')
   vivid.id = '__plugin-vivid'
   vivid.onclick = function (e) { e.stopPropagation() }
+  vivid.onmouseup = function (e) { e.stopPropagation() }
   vivid.appendChild(vividInner)
   document.body.appendChild(vivid)
 
@@ -170,14 +171,14 @@ var vm
             <p>{{item.def}}</p>
           </li>
         </ul>
-        <div v-show="showToggle" @click.stop="toggleAllExamples" class="toggle color-info text-right">{{toggleAllExamplesText}}</div>
+        <div v-show="showToggle" @click="toggleAllExamples" class="toggle color-info text-right">{{toggleAllExamplesText}}</div>
         <p class="message">
           {{wordData.message}}
         </p>
       </div>
 
-      <div class="__vivi-image">
-        <ul class="imagelist" v-if="imageData && imageData.value">
+      <div class="__vivi-image" v-show="imageData && imageData.value">
+        <ul class="imagelist">
           <li class="imageitem"
             v-for="item in imageData.value"
             :style="{ width: (item.width * 170 / item.height) + 'px', flexGrow: item.width * 170 / item.height }"
