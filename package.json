@@ -1,0 +1,43 @@
+{
+  "name": "vivid",
+  "version": "1.0.0",
+  "description": "A dictionary with pictures chrome extension",
+  "main": "background.js",
+  "devDependencies": {
+    "clean-webpack-plugin": "^0.1.19",
+    "copy-webpack-plugin": "^4.5.2",
+    "css-loader": "^1.0.0",
+    "file-loader": "^2.0.0",
+    "html-webpack-plugin": "^3.2.0",
+    "style-loader": "^0.23.0",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^3.0.2",
+    "vue-loader": "^15.4.1",
+    "vue-style-loader": "^4.1.2",
+    "vue-template-compiler": "^2.5.17",
+    "webpack": "^4.17.1",
+    "webpack-cli": "^3.1.0",
+    "webpack-dev-server": "^3.1.7",
+    "webpack-merge": "^4.1.4",
+    "write-file-webpack-plugin": "^4.3.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack-dev-server --config webpack.dev.js",
+    "build": "webpack --config webpack.prod.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/acfasj/vivid.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/acfasj/vivid/issues"
+  },
+  "homepage": "https://github.com/acfasj/vivid#readme",
+  "dependencies": {
+    "vue": "^2.5.17"
+  }
+}
