@@ -1,6 +1,5 @@
 <template>
   <div class="__vivid-result" v-show="show" :style="{ left: x + 'px', top: y + 'px' }">
-    哎呀哎呀 哎呀哎呀 哎呀哎呀
     <div class="__vivi-word">
       <div class="word-wrapper" v-show="word">
         <div class="word">{{word}}</div>
@@ -48,7 +47,7 @@ import {
   toQueryString,
   appendQueryString,
   debounce
-} from '../common/helper/index.js'
+} from './common/helper/index.js'
 
 const CONTAINER_WIDTH = 800
 const CONTAINER_HEIGHT = 500
@@ -66,9 +65,7 @@ async function find(word) {
 
 async function getImageList(word) {
   return fetch(
-    `https://vivid.huanghongkai.com/image/search?q=${encodeURIComponent(
-      word
-    )}`
+    `https://vivid.huanghongkai.com/image/search?q=${encodeURIComponent(word)}`
   ).then(res => res.json())
 }
 
@@ -121,42 +118,40 @@ export default {
   },
 
   created() {
-    const self = this
-    document.addEventListener(
-      'selectionchange',
-      debounce(this.onSelectionChange)
-    )
-    document.addEventListener('click', function(e) {
-      self.show = false
-    })
-    document.addEventListener('mouseup', function(e) {
-      const mouseX = e.clientX
-      const mouseY = e.clientY
+    this.bindEvents()
+  },
 
-      // 尽量往右下角靠
-      if (mouseX + CONTAINER_WIDTH <= window.innerWidth) {
-        self.x = mouseX
-      } else {
-        self.x = window.innerWidth - CONTAINER_WIDTH
-      }
-      if (mouseY + CONTAINER_HEIGHT <= window.innerHeight) {
-        self.y = mouseY
-      } else {
-        self.y = window.innerHeight - CONTAINER_HEIGHT
-      }
-    })
+  beforeDestroy() {
+    this.unbindEvents()
   },
 
   methods: {
     play(ref) {
       ref.play()
     },
+
     toggleAllExamples() {
       this.showAllColins = !this.showAllColins
     },
 
+    bindEvents() {
+      this._onSelectionChange = debounce(this.onSelectionChange).bind(this)
+      this._onDocumentClick = this.onDocumentClick.bind(this)
+      this._onDocumentMouseup = this.onDocumentMouseup.bind(this)
+
+      document.addEventListener('selectionchange', this._onSelectionChange)
+      document.addEventListener('click', this._onDocumentClick)
+      document.addEventListener('mouseup', this._onDocumentMouseup)
+    },
+
+    unbindEvents() {
+      document.removeEventListener('selectionchange', this._onSelectionChange)
+      document.removeEventListener('click', this._onDocumentClick)
+      document.removeEventListener('mouseup', this._onDocumentMouseup)
+    },
+
     async onSelectionChange() {
-      let text = this._getSelectionText().trim()
+      let text = this.getSelectionText().trim()
       let wordData, imageData
       if (text && text.length < 5000) {
         console.log(text, '选中的文字', text.length)
@@ -179,7 +174,28 @@ export default {
       }
     },
 
-    _getSelectionText() {
+    onDocumentClick(e) {
+      this.show = false
+    },
+
+    onDocumentMouseup(e) {
+      const mouseX = e.clientX
+      const mouseY = e.clientY
+
+      // 尽量往右下角靠
+      if (mouseX + CONTAINER_WIDTH <= window.innerWidth) {
+        this.x = mouseX
+      } else {
+        this.x = window.innerWidth - CONTAINER_WIDTH
+      }
+      if (mouseY + CONTAINER_HEIGHT <= window.innerHeight) {
+        this.y = mouseY
+      } else {
+        this.y = window.innerHeight - CONTAINER_HEIGHT
+      }
+    },
+
+    getSelectionText() {
       var text = ''
       var activeEl = document.activeElement
       var activeElTagName = activeEl ? activeEl.tagName.toLowerCase() : null

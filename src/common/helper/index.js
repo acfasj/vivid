@@ -26,8 +26,21 @@ function debounce(fn, wait = 500) {
   }
 }
 
+function getDisabedSites() {
+  return new Promise((resolve, reject) => {
+    chrome.storage.sync.get(['disabled'], res => {
+      let ret = []
+      if (res.disabled && res.disabled.length) {
+        ret = res.disabled
+      }
+      resolve(ret)
+    })
+  })
+}
+
 export {
   toQueryString,
   appendQueryString,
-  debounce
+  debounce,
+  getDisabedSites
 }

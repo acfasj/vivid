@@ -16,14 +16,14 @@
     "vue-style-loader": "^4.1.2",
     "vue-template-compiler": "^2.5.17",
     "webpack": "^4.17.1",
+    "webpack-chrome-extension-reloader": "^0.8.3",
     "webpack-cli": "^3.1.0",
-    "webpack-dev-server": "^3.1.7",
-    "webpack-merge": "^4.1.4",
-    "write-file-webpack-plugin": "^4.3.2"
+    "webpack-merge": "^4.1.4"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-dev-server --config webpack.dev.js",
+    "start": "webpack --config webpack.dev.js --watch",
+    "dev": "npm start",
     "build": "webpack --config webpack.prod.js"
   },
   "repository": {

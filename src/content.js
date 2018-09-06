@@ -1,28 +1,49 @@
 import Vue from 'vue'
-import VividResult from './component/vivid-result.vue'
+import VContent from './content.vue' // 因为 content 是一个废弃的 html 标签, 不能直接用
+import { getDisabeldSites } from './common/helper'
 
 console.log('vivid is working')
 
-const vivid = document.createElement('div')
-const vividInner = document.createElement('div')
-vivid.id = '__plugin-vivid'
-vivid.onclick = function(e) {
-  e.stopPropagation()
+let vm = null
+let vivid = null
+
+function create() {
+  vivid = document.createElement('div')
+  const vividInner = document.createElement('div')
+  vivid.id = '__plugin-vivid'
+  vivid.onclick = function(e) {
+    e.stopPropagation()
+  }
+  vivid.onmouseup = function(e) {
+    e.stopPropagation()
+  }
+  vivid.appendChild(vividInner)
+  document.body.appendChild(vivid)
+
+  vm = new Vue({
+    el: vividInner,
+    components: {
+      VContent
+    },
+    template: '<v-content/>'
+  })
 }
-vivid.onmouseup = function(e) {
-  e.stopPropagation()
+
+function destroy() {
+  vm && vm.$destroy()
+  vivid && document.body.removeChild(vivid)
 }
-vivid.appendChild(vividInner)
-document.body.appendChild(vivid)
 
-const vm = new Vue({
-  el: vividInner,
-  components: {
-    VividResult
-  },
-  template: '<vivid-result></vivid-result>'
-})
+function main() {
+  getDisabeldSites
+    .then(sites => {
+      const host = location.host
+      if (sites.indexOf(host) < 0) {
+        // 正常使用
+        create()
+      }
+    })
+}
 
-console.log('来自content的遥远的问候')
+main()
 
-export default vm

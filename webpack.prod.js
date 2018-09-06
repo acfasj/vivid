@@ -6,9 +6,6 @@ module.exports = merge(common, {
   mode: 'production',
   devtool: 'source-map',
   output: {
-    filename: '[name].[contentHash].js',
-  },
-  plugins: [
-    new webpack.HashedModuleIdsPlugin()
-  ]
+    filename: '[name].js',
+  }
 })

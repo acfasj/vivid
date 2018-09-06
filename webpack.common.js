@@ -18,8 +18,8 @@ module.exports = {
     popup: './src/popup.js'
   },
   plugins: [
-    new VueLoaderPlugin(),
     new CleanWebpackPlugin(['dist']),
+    new VueLoaderPlugin(),
     new HtmlWbpackPlugin({
       filename: 'option.html',
       template: './src/option.html',

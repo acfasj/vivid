@@ -17,41 +17,9 @@ import Popup from './popup.vue'
 //   })
 // }
 
-// Vue.component('toggle', {
-//   template: `
-//   <div class="component-toggle">
-//     <span class="toggle-label">
-//       <slot></slot>
-//     </span>
-//     <input type="checkbox" v-model="checkboxValue" class="toggle-input">
-//     <i class="toggle-ui"></i>
-//     <span
-//   </div>
-//   `,
-//   props: {
-//     value: {
-//       type: Boolean,
-//       default: false
-//     }
-//   },
-//   data() {
-//     return {
-//       checkboxValue: this.value
-//     }
-//   },
-//   watch: {
-//     value (newVal) {
-//       this.checkboxValue = newVal
-//     },
-//     checkboxValue(newVal) {
-//       this.$emit('input', newVal)
-//     }
-//   }
-// })
-
 
 new Vue({
   render: h => h(Popup)
 }).$mount('#app')
 
-console.log('更新popup')
+console.log('popup也更新啊')
