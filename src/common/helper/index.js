@@ -26,14 +26,67 @@ function debounce(fn, wait = 500) {
   }
 }
 
-function getDisabedSites() {
+function getDisabledSites() {
   return new Promise((resolve, reject) => {
-    chrome.storage.sync.get(['disabled'], res => {
+    chrome.storage.sync.get(['disabledSites'], res => {
       let ret = []
-      if (res.disabled && res.disabled.length) {
-        ret = res.disabled
+      if (res.disabledSites && res.disabledSites.length) {
+        ret = res.disabledSites
       }
       resolve(ret)
+    })
+  })
+}
+
+async function addDisabledSites(hostArr) {
+  if (!Array.isArray(hostArr)) {
+    hostArr = [hostArr]
+  }
+  let disabledSites = await getDisabledSites()
+  disabledSites = [...new Set(disabledSites.concat(hostArr))]
+  console.log('to be add: ', disabledSites)
+  return new Promise((resolve, reject) => {
+    chrome.storage.sync.set({ disabledSites }, () => {
+      resolve(disabledSites)
+    })
+  })
+}
+
+async function removeDisabledSites(hostArr) {
+  if (!Array.isArray(hostArr)) {
+    hostArr = [hostArr]
+  }
+  let disabledSites = await getDisabledSites()
+  disabledSites = disabledSites.filter(host => hostArr.indexOf(host) < 0)
+  console.log('after remove: ', disabledSites)
+  return new Promise((resolve, reject) => {
+    chrome.storage.sync.set({ disabledSites }, () => {
+      resolve(disabledSites)
+    })
+  })
+}
+
+async function isDisabledSite(host) {
+  let disabledSites = await getDisabledSites()
+  return disabledSites.indexOf(host) >= 0
+}
+
+function getHostFromURL(url) {
+  const reg = /\/\/([\w\.]+)\/?/
+  const matches = reg.exec(url)
+  if (matches && matches[1]) {
+    return matches[1]
+  }
+  return ''
+}
+
+function getCurrentTab() {
+  return new Promise((resolve, reject) => {
+    chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+      if (tabs && tabs[0]) {
+        return resolve(tabs[0])
+      }
+      reject(new Error('tabs do not exist'))
     })
   })
 }
@@ -42,5 +95,10 @@ export {
   toQueryString,
   appendQueryString,
   debounce,
-  getDisabedSites
+  getDisabledSites,
+  addDisabledSites,
+  removeDisabledSites,
+  isDisabledSite,
+  getHostFromURL,
+  getCurrentTab
 }

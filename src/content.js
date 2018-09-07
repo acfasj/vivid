@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VContent from './content.vue' // 因为 content 是一个废弃的 html 标签, 不能直接用
-import { getDisabeldSites } from './common/helper'
+import { getDisabledSites } from './common/helper'
 
 console.log('vivid is working')
 
@@ -32,18 +32,32 @@ function create() {
 function destroy() {
   vm && vm.$destroy()
   vivid && document.body.removeChild(vivid)
+  vm = null
+  vivid = null
 }
 
 function main() {
-  getDisabeldSites
-    .then(sites => {
-      const host = location.host
-      if (sites.indexOf(host) < 0) {
-        // 正常使用
-        create()
-      }
-    })
+  getDisabledSites().then(sites => {
+    const host = location.host
+    if (sites.indexOf(host) < 0) {
+      // 正常使用
+      create()
+    }
+  })
 }
 
-main()
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  console.log(
+    sender.tab
+      ? 'from a content script:' + sender.tab.url
+      : 'from the extension'
+  )
+  console.log(request, '请求的数据')
+  if (request.disabled === true && vivid && vm) {
+    destroy()
+  } else if (request.disabled === false && !vivid && !vm) {
+    create()
+  }
+})
 
+main()
