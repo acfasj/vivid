@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div class="row">
-      <span>此站点禁用</span>
+      <span class="label">此站点禁用</span>
       <v-toggle v-model="disabled"></v-toggle>
     </div>
   </div>
@@ -73,8 +73,8 @@ export default {
 
 <style lang="stylus">
 html, body
-  width: 200px
-  height: 200px
+  width: 150px
+  height: 50px
   margin: 0
   padding: 0
 
@@ -82,10 +82,15 @@ html, body
   width: 100%
   height: 100%
   box-sizing: border-box
-  padding: 20px
+  display: flex
+  justify-content: center
+  align-items: center
 
   .row
     display: flex
     justify-content: space-between
     align-items: center
+    .label
+      margin-right: 15px
+      font-size: 12px
 </style>

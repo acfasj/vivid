@@ -33,6 +33,7 @@ export default {
 .v-toggle
   --switch-width: 36px
   --switch-height: 18px
+  cursor: pointer
   position: relative
   display: flex
   align-items: center
@@ -45,8 +46,8 @@ export default {
     opacity: 0
 
     &:checked + .toggle-ui
-      border-color: rgb(3, 152, 226)
-      background-color: rgb(3, 152, 226)
+      border-color: rgb(3, 132, 196)
+      background-color: rgb(3, 132, 196)
 
     &:checked + .toggle-ui::before
       transform: scale(0)

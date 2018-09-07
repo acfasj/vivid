@@ -22,7 +22,7 @@
       </p>
     </div>
 
-    <div class="__vivi-image" v-show="imageData && imageData.value">
+    <div class="__vivi-image" v-if="imageData && imageData.value">
       <ul class="imagelist">
         <li class="imageitem"
           v-for="item in imageData.value"
@@ -160,13 +160,13 @@ export default {
 
         try {
           wordData = await wordPromise
+          this.show = true
+          this.text = text
+          this.wordData = this._normalizeWordData(wordData)
           imageData = await imagePromise
         } catch (e) {
           console.log(e, '错误')
         }
-        this.text = text
-        this.show = true
-        this.wordData = this._normalizeWordData(wordData)
         this.imageData = imageData
         console.log(wordData, imageData, '释义')
         console.log(this.wordData, '单词数据')
@@ -230,7 +230,13 @@ export default {
         }
         // sound
         if (data.baesInfo.symbols) {
-          res.sound = data.baesInfo.symbols[0]
+          const rawSound = data.baesInfo.symbols[0]
+          for (const k in rawSound) {
+            if (typeof rawSound[k] === 'string' && rawSound[k].startsWith('http:')) {
+              rawSound[k] = rawSound[k].replace('http:', 'https:')
+            }
+          }
+          res.sound = rawSound
         }
         if (data.baesInfo.translate_result) {
           res.message = data.baesInfo.translate_result
@@ -240,7 +246,7 @@ export default {
       }
 
       return res
-    }
+    },
   }
 }
 </script>

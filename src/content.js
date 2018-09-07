@@ -21,12 +21,8 @@ function create() {
   document.body.appendChild(vivid)
 
   vm = new Vue({
-    el: vividInner,
-    components: {
-      VContent
-    },
-    template: '<v-content/>'
-  })
+    render: h => h(VContent)
+  }).$mount(vividInner)
 }
 
 function destroy() {
