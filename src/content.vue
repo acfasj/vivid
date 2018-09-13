@@ -22,16 +22,16 @@
       </p>
     </div>
 
-    <div class="__vivi-image" v-if="imageData && imageData.value">
+    <div class="__vivi-image" v-if="imageData && imageData.value.length">
       <ul class="imagelist">
         <li class="imageitem"
-          v-for="item in imageData.value"
-          :key="item.thumbnailUrl"
+          v-for="(item, index) in imageData.value"
+          :key="item.thumbnailUrl + index"
           :style="{ width: (item.width * 170 / item.height) + 'px', flexGrow: item.width * 170 / item.height }"
         >
           <i :style="{ paddingBottom: (item.height / item.width * 100) + '%' }"></i>
-          <a :href="item.webSearchUrl" target="_blank" :title="item.name">
-            <img :src="item.thumbnailUrl" :alt="item.name">
+          <a :href="item.webSearchUrl" target="_blank" :title="item.name || '图片'">
+            <img :src="item.thumbnailUrl" :alt="item.name || '图片'">
           </a>
         </li>
       </ul>
@@ -51,6 +51,16 @@ import {
 
 const CONTAINER_WIDTH = 800
 const CONTAINER_HEIGHT = 500
+const imageLoadingData = new Array(9)
+  .fill(chrome.runtime.getURL('static/vivid-128.png'))
+  .map(url => {
+    return {
+      thumbnailUrl: url,
+      width: 128,
+      height: 128,
+      webSearchUrl: ''
+    }
+  })
 
 async function find(word) {
   let url = 'https://www.iciba.com/index.php'
@@ -79,7 +89,7 @@ export default {
         sound: {},
         message: ''
       },
-      imageData: {},
+      imageData: { value: [] },
       x: 0,
       y: 0,
       showAllColins: false
@@ -113,6 +123,7 @@ export default {
       if (!newVal) {
         this.$el.scrollTop = 0
         this.showAllColins = false
+        this.imageData.value = imageLoadingData
       }
     }
   },
@@ -232,7 +243,10 @@ export default {
         if (data.baesInfo.symbols) {
           const rawSound = data.baesInfo.symbols[0]
           for (const k in rawSound) {
-            if (typeof rawSound[k] === 'string' && rawSound[k].startsWith('http:')) {
+            if (
+              typeof rawSound[k] === 'string' &&
+              rawSound[k].startsWith('http:')
+            ) {
               rawSound[k] = rawSound[k].replace('http:', 'https:')
             }
           }
@@ -246,7 +260,7 @@ export default {
       }
 
       return res
-    },
+    }
   }
 }
 </script>

@@ -17,12 +17,12 @@ module.exports = {
     new HtmlWbpackPlugin({
       filename: 'option.html',
       template: './src/option.html',
-      chunks: [ 'option' ]
+      chunks: [ 'vendor', 'option' ]
     }),
     new HtmlWbpackPlugin({
       filename: 'popup.html',
       template: './src/popup.html',
-      chunks: [ 'popup' ]
+      chunks: [ 'vendor', 'popup' ]
     }),
     new CopyWebpackPlugin([
       { from: './src/manifest.json' }
@@ -36,17 +36,16 @@ module.exports = {
     path: path.resolve(__dirname, 'dist')
   },
   optimization: {
-    // runtimeChunk: 'single',
-    // splitChunks: {
-    //   chunks: 'all',
-    //   cacheGroups: {
-    //     vendor: {
-    //       test: /[\\/]node_modules[\\/]/,
-    //       name: 'vendors',
-    //       chunks: 'all'
-    //     }
-    //   }
-    // }
+    splitChunks: {
+      chunks: 'all',
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendor',
+          chunks: 'all'
+        }
+      }
+    }
   },
   module: {
     rules: [
