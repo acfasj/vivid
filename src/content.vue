@@ -22,7 +22,7 @@
       </p>
     </div>
 
-    <div class="__vivi-image" v-if="imageData && imageData.value.length">
+    <div class="__vivi-image" v-show="imageData && imageData.value.length">
       <ul class="imagelist">
         <li class="imageitem"
           v-for="(item, index) in imageData.value"
@@ -51,8 +51,8 @@ import {
 
 const CONTAINER_WIDTH = 800
 const CONTAINER_HEIGHT = 500
-const imageLoadingData = new Array(9)
-  .fill(chrome.runtime.getURL('static/vivid-128.png'))
+const imageLoadingValue = new Array(9)
+  .fill(chrome.runtime.getURL('static/white.jpg'))
   .map(url => {
     return {
       thumbnailUrl: url,
@@ -61,6 +61,7 @@ const imageLoadingData = new Array(9)
       webSearchUrl: ''
     }
   })
+const initialImageData = { value: [], webSearchUrl: '' }
 
 async function find(word) {
   let url = 'https://www.iciba.com/index.php'
@@ -89,7 +90,7 @@ export default {
         sound: {},
         message: ''
       },
-      imageData: { value: [] },
+      imageData: initialImageData,
       x: 0,
       y: 0,
       showAllColins: false
@@ -123,7 +124,7 @@ export default {
       if (!newVal) {
         this.$el.scrollTop = 0
         this.showAllColins = false
-        this.imageData.value = imageLoadingData
+        this.imageData.value = imageLoadingValue
       }
     }
   },
@@ -178,7 +179,7 @@ export default {
         } catch (e) {
           console.log(e, '错误')
         }
-        this.imageData = imageData
+        this.imageData = imageData || initialImageData
         console.log(wordData, imageData, '释义')
         console.log(this.wordData, '单词数据')
         console.log(this.show, '是否显示')
