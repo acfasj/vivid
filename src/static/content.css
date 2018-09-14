@@ -62,12 +62,16 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-top: -18px;
 }
 #__plugin-vivid .word {
   font-weight: bold;
 }
-#__plugin-vivid .sound span+span {
-  margin-left: 20px;
+#__plugin-vivid .sound {
+  display: flex;
+}
+#__plugin-vivid .sound p+p {
+  margin-left: 20px !important;
 }
 #__plugin-vivid .collins li {
   margin: 18px 0;

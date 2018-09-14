@@ -2,10 +2,10 @@
   <div class="__vivid-result" v-show="show" :style="{ left: x + 'px', top: y + 'px' }">
     <div class="__vivi-word">
       <div class="word-wrapper" v-show="word">
-        <div class="word">{{word}}</div>
+        <p class="word">{{word}}</p>
         <div class="sound">
-          <span v-show="wordData.sound.ph_am_mp3" @mouseenter ="play($refs.amAudio)">American [{{wordData.sound.ph_am}}]</span>
-          <span v-show="wordData.sound.ph_en_mp3" @mouseenter ="play($refs.enAudio)">British [{{wordData.sound.ph_en}}]</span>
+          <p v-show="wordData.sound.ph_am_mp3" @mouseenter ="play($refs.amAudio)">American [{{wordData.sound.ph_am}}]</p>
+          <p v-show="wordData.sound.ph_en_mp3" @mouseenter ="play($refs.enAudio)">British [{{wordData.sound.ph_en}}]</p>
           <audio ref="amAudio" :src="wordData.sound.ph_am_mp3" class="hidden"></audio>
           <audio ref="enAudio" :src="wordData.sound.ph_en_mp3" class="hidden"></audio>
         </div>
