@@ -75,9 +75,11 @@ async function find(word) {
 }
 
 async function getImageList(word) {
-  return fetch(
-    `https://vivid.huanghongkai.com/image/search?q=${encodeURIComponent(word)}`
-  ).then(res => res.json())
+  const url = `https://cn.bing.com/images/async?q=${encodeURIComponent(
+    word
+  )}&first=0&count=9&relp=35&lostate=r&relo=1&relr=6&rely=1029&mmasync=1&dgState=x*847_y*1029_h*196_c*5_i*36_r*6&IG=34CC46448A3B417C8848845E206B0C6A&SFX=2&iid=images.5871`
+
+  return fetch(url).then(res => res.text())
 }
 
 export default {
@@ -130,6 +132,7 @@ export default {
   },
 
   created() {
+    this._divEl = document.createElement('div')
     this.bindEvents()
   },
 
@@ -170,18 +173,14 @@ export default {
         const wordPromise = find(text)
         const imagePromise = getImageList(text)
 
-        try {
-          wordData = await wordPromise
-          this.show = true
-          this.text = text
-          this.wordData = this._normalizeWordData(wordData)
-          imageData = await imagePromise
-        } catch (e) {
-          console.log(e, '错误')
-        }
-        this.imageData = imageData || initialImageData
-        console.log(wordData, imageData, '释义')
+        wordData = await wordPromise
+        imageData = await imagePromise
+        this.text = text
+        this.wordData = this._normalizeWordData(wordData)
+        this.imageData = this._normalizeImageData(imageData, text)
+        this.show = true
         console.log(this.wordData, '单词数据')
+        console.log(this.imageData, '图片数据')
         console.log(this.show, '是否显示')
       }
     },
@@ -261,6 +260,31 @@ export default {
       }
 
       return res
+    },
+
+    _normalizeImageData(str, text) {
+      const reg = /<script[\s\S]*?>[\s\S]*?<\/script>|<style[\s\S]*?>[\s\S]*?<\/style>|<img[\s]*?id="gif_loading"[\s\S]*?\/>/gi
+      str = str.replace(reg, '')
+      this._divEl.innerHTML = str
+      const aTags = this._divEl.querySelectorAll('.iusc')
+      const value = Array.from(aTags)
+        .slice(0, 10)
+        .map(a => {
+          const item = {}
+          const mad = JSON.parse(a.getAttribute('mad'))
+          item.thumbnailUrl = mad.turl
+          item.width = +mad.maw
+          item.height = +mad.mah
+          item.webSearchUrl = 'https://cn.bing.com' + a.getAttribute('href')
+          item.name = a.querySelector('img').getAttribute('alt')
+          return item
+        })
+      return {
+        webSearchUrl: `https://cn.bing.com/images/search?q=${encodeURIComponent(
+          text
+        )}&FORM=HDRSC2&ensearch=1`,
+        value
+      }
     }
   }
 }
