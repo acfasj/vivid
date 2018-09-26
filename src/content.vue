@@ -16,8 +16,8 @@
           <p>{{item.def}}</p>
         </li>
       </ul>
-      <div v-show="showToggle" @click="toggleAllExamples" class="toggle color-info text-right">{{toggleAllExamplesText}}</div>
-      <p class="message">
+      <p v-show="showToggle" @click="toggleAllExamples" class="toggle color-info text-right">{{toggleAllExamplesText}}</p>
+      <p v-show="collins.length <= 0" class="message">
         {{wordData.message}}
       </p>
     </div>
@@ -232,31 +232,44 @@ export default {
         message: '',
         sound: {}
       }
-      if (data.errno === 0) {
-        res.word = data.baesInfo.word_name
-        // colins
-        if (data.collins) {
-          res.collins = data.collins[0].entry
-          res.sound = data.baesInfo.symbols ? data.baesInfo.symbols[0] : {}
-        }
-        // sound
-        if (data.baesInfo.symbols) {
-          const rawSound = data.baesInfo.symbols[0]
-          for (const k in rawSound) {
-            if (
-              typeof rawSound[k] === 'string' &&
-              rawSound[k].startsWith('http:')
-            ) {
-              rawSound[k] = rawSound[k].replace('http:', 'https:')
-            }
-          }
-          res.sound = rawSound
-        }
-        if (data.baesInfo.translate_result) {
-          res.message = data.baesInfo.translate_result
-        }
-      } else {
+
+      if (data.errno !== 0) {
         res.message = data.errmsg
+        return res
+      }
+
+      res.word = data.baesInfo.word_name
+
+      // colins
+      if (data.collins) {
+        res.collins = data.collins[0].entry
+        res.sound = data.baesInfo.symbols ? data.baesInfo.symbols[0] : {}
+      }
+
+      // sound
+      if (data.baesInfo.symbols) {
+        const rawSound = data.baesInfo.symbols[0]
+        for (const k in rawSound) {
+          if (
+            typeof rawSound[k] === 'string' &&
+            rawSound[k].startsWith('http:')
+          ) {
+            rawSound[k] = rawSound[k].replace('http:', 'https:')
+          }
+        }
+        res.sound = rawSound
+      }
+
+      // message
+      if (data.baesInfo.translate_result) {
+        res.message = data.baesInfo.translate_result
+      } else if (data.ee_mean && data.ee_mean[0]) {
+        let means = data.ee_mean[0].means
+        if (means && means[0]) {
+          res.message = means[0].word_mean || ''
+        }
+      } else if (data.netmean && data.PerfectNetExp && data.PerfectNetExp[0]) {
+        res.message = data.PerfectNetExp[0].exp || ''
       }
 
       return res
