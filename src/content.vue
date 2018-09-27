@@ -268,9 +268,11 @@ export default {
         if (means && means[0]) {
           res.message = means[0].word_mean || ''
         }
-      } else if (data.netmean && data.PerfectNetExp && data.PerfectNetExp[0]) {
-        res.message = data.PerfectNetExp[0].exp || ''
+      } else if (data.netmean && data.netmean.PerfectNetExp && data.netmean.PerfectNetExp[0]) {
+        res.message = data.netmean.PerfectNetExp[0].exp || ''
       }
+
+      console.log(data, res.meesage, 'debug')
 
       return res
     },
