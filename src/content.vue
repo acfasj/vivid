@@ -287,7 +287,11 @@ export default {
         .map(a => {
           const item = {}
           const mad = JSON.parse(a.getAttribute('mad'))
-          item.thumbnailUrl = mad.turl
+          if (mad.turl.startsWith('/')) {
+            item.thumbnailUrl = 'https://cn.bing.com' + mad.turl
+          } else {
+            item.thumbnailUrl = mad.turl
+          }
           item.width = +mad.maw
           item.height = +mad.mah
           item.webSearchUrl = 'https://cn.bing.com' + a.getAttribute('href')
