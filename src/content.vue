@@ -46,7 +46,8 @@
 import {
   toQueryString,
   appendQueryString,
-  debounce
+  debounce,
+  send
 } from './common/helper/index.js'
 
 const CONTAINER_WIDTH = 800
@@ -62,25 +63,6 @@ const imageLoadingValue = new Array(9)
     }
   })
 const initialImageData = { value: [], webSearchUrl: '' }
-
-async function find(word) {
-  let url = 'https://www.iciba.com/index.php'
-  url = appendQueryString(url, {
-    a: 'getWordMean',
-    c: 'search',
-    word,
-    list: '1,3,4'
-  })
-  return fetch(url).then(res => res.json())
-}
-
-async function getImageList(word) {
-  const url = `https://cn.bing.com/images/async?q=${encodeURIComponent(
-    word
-  )}&first=0&count=9&relp=35&lostate=r&relo=1&relr=6&rely=1029&mmasync=1&dgState=x*847_y*1029_h*196_c*5_i*36_r*6&IG=34CC46448A3B417C8848845E206B0C6A&SFX=2&iid=images.5871`
-
-  return fetch(url).then(res => res.text())
-}
 
 export default {
   data() {
@@ -169,12 +151,12 @@ export default {
       let text = this.getSelectionText().trim()
       let wordData, imageData
       if (text && text.length < 5000) {
-        console.log(text, '选中的文字', text.length)
-        const wordPromise = find(text)
-        const imagePromise = getImageList(text)
 
-        wordData = await wordPromise
-        imageData = await imagePromise
+        const data = await send({ word: text })
+        console.log('结果', data)
+        const wordData = data.word
+        const imageData = data.image
+
         this.text = text
         this.wordData = this._normalizeWordData(wordData)
         this.imageData = this._normalizeImageData(imageData, text)

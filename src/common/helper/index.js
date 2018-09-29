@@ -91,6 +91,14 @@ function getCurrentTab() {
   })
 }
 
+function send(obj) {
+  return new Promise((resolve, reject) => {
+    chrome.runtime.sendMessage(obj, function (res) {
+      resolve(res)
+    })
+  }).then(res => res)
+}
+
 export {
   toQueryString,
   appendQueryString,
@@ -100,5 +108,6 @@ export {
   removeDisabledSites,
   isDisabledSite,
   getHostFromURL,
-  getCurrentTab
+  getCurrentTab,
+  send
 }

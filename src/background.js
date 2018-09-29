@@ -1,8 +1,6 @@
-chrome.runtime.onInstalled.addListener(function() {
-  chrome.storage.sync.set({ color: '#3aa757' }, function() {
-    console.log('The color is green.')
-  })
+import { appendQueryString } from './common/helper'
 
+chrome.runtime.onInstalled.addListener(function() {
   chrome.declarativeContent.onPageChanged.removeRules(undefined, function() {
     chrome.declarativeContent.onPageChanged.addRules([
       {
@@ -13,4 +11,44 @@ chrome.runtime.onInstalled.addListener(function() {
   })
 })
 
-console.log('背景更新了')
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  console.log(
+    sender.tab
+      ? 'from a content script:' + sender.tab.url
+      : 'from the extension'
+  )
+  console.log(request)
+
+  if (request.word) {
+    Promise.all([
+      find(request.word),
+      getImageList(request.word)
+    ]).then(([word, image]) => {
+      const data = { word, image }
+      sendResponse(data)
+    })
+    // https://blog.csdn.net/anjingshen/article/details/75579521
+    // https://developer.chrome.com/extensions/messaging
+    // 异步，必须返回true！
+    return true
+  }
+})
+
+async function find(word) {
+  let url = 'https://www.iciba.com/index.php'
+  url = appendQueryString(url, {
+    a: 'getWordMean',
+    c: 'search',
+    word,
+    list: '1,3,4'
+  })
+  return fetch(url).then(res => res.json())
+}
+
+async function getImageList(word) {
+  const url = `https://cn.bing.com/images/async?q=${encodeURIComponent(
+    word
+  )}&first=0&count=9&relp=35&lostate=r&relo=1&relr=6&rely=1029&mmasync=1&dgState=x*847_y*1029_h*196_c*5_i*36_r*6&IG=34CC46448A3B417C8848845E206B0C6A&SFX=2&iid=images.5871`
+
+  return fetch(url).then(res => res.text())
+}

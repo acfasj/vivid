@@ -9,7 +9,9 @@
     "storage",
     "declarativeContent",
     "activeTab",
-    "tabs"
+    "tabs",
+    "https://*/",
+    "http://*/"
   ],
   "background": {
     "scripts": ["background.js"],
