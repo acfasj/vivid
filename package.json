@@ -1,6 +1,6 @@
 {
   "name": "vivid",
-  "version": "1.0.0",
+  "version": "0.0.2",
   "description": "A dictionary with pictures chrome extension",
   "main": "background.js",
   "devDependencies": {
