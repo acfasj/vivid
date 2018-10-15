@@ -114,7 +114,11 @@ export default {
   },
 
   created() {
-    this._divEl = document.createElement('div')
+    console.log('实例配置', this.config)
+
+    this._divEl = document.createElement('div') // for image html query
+    this.shouldUseCtrl = this.config.shouldUseCtrl || false // only working with ctrl key
+    this.isCtrlPressing = false
     this.bindEvents()
   },
 
@@ -135,25 +139,33 @@ export default {
       this._onSelectionChange = debounce(this.onSelectionChange).bind(this)
       this._onDocumentClick = this.onDocumentClick.bind(this)
       this._onDocumentMouseup = this.onDocumentMouseup.bind(this)
+      if (this.shouldUseCtrl) this._onDocumentkeyDown = this.onDocumentKeyDown.bind(this)
+      if (this.shouldUseCtrl) this._onDocumentkeyUp = this.onDocumentKeyUp.bind(this)
 
       document.addEventListener('selectionchange', this._onSelectionChange)
       document.addEventListener('click', this._onDocumentClick)
       document.addEventListener('mouseup', this._onDocumentMouseup)
+      if (this.shouldUseCtrl) document.addEventListener('keydown', this._onDocumentkeyDown)
+      if (this.shouldUseCtrl) document.addEventListener('keyup', this._onDocumentkeyUp)
     },
 
     unbindEvents() {
       document.removeEventListener('selectionchange', this._onSelectionChange)
       document.removeEventListener('click', this._onDocumentClick)
       document.removeEventListener('mouseup', this._onDocumentMouseup)
+      if (this.shouldUseCtrl) document.removeEventListener('keydown', this._onDocumentkeyDown)
+      if (this.shouldUseCtrl) document.removeEventListener('keyup', this._onDocumentkeyUp)
     },
 
-    async onSelectionChange() {
+    async onSelectionChange(e) {
       let text = this.getSelectionText().trim()
       let wordData, imageData
-      if (text && text.length < 5000) {
-
+      // 不要使用 computed
+      // 因为 computed 本质上是 watcher
+      // 暂时还解释不清楚, todo...
+      const shouldWork = !this.shouldUseCtrl || (this.shouldUseCtrl && this.isCtrlPressing)
+      if (text && text.length < 5000 && shouldWork) {
         const data = await send({ word: text })
-        console.log('结果', data)
         const wordData = data.word
         const imageData = data.image
 
@@ -186,6 +198,20 @@ export default {
       } else {
         this.y = window.innerHeight - CONTAINER_HEIGHT
       }
+    },
+
+    onDocumentKeyDown(e) {
+      if (e.ctrlKey && !this.isCtrlPressing) {
+        this.isCtrlPressing = true
+      }
+      console.log('按下', this.isCtrlPressing)
+    },
+
+    onDocumentKeyUp(e) {
+      if (this.isCtrlPressing) {
+        this.isCtrlPressing = false
+      }
+      console.log('松开', this.isCtrlPressing)
     },
 
     getSelectionText() {
@@ -250,7 +276,11 @@ export default {
         if (means && means[0]) {
           res.message = means[0].word_mean || ''
         }
-      } else if (data.netmean && data.netmean.PerfectNetExp && data.netmean.PerfectNetExp[0]) {
+      } else if (
+        data.netmean &&
+        data.netmean.PerfectNetExp &&
+        data.netmean.PerfectNetExp[0]
+      ) {
         res.message = data.netmean.PerfectNetExp[0].exp || ''
       }
 
