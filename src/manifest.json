@@ -1,6 +1,6 @@
 {
   "name": "vivid",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "English dictionary(Collins) with images",
   "manifest_version": 2,
   "content_security_policy": "script-src 'self' https://cdn.bootcss.com 'unsafe-eval'; object-src 'self';",
