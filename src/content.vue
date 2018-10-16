@@ -246,7 +246,9 @@ export default {
         return res
       }
 
-      res.word = data.baesInfo.word_name
+      if (data.baesInfo && data.baesInfo.word_name) {
+        res.word = data.baesInfo.word_name
+      }
 
       // colins
       if (data.collins) {
