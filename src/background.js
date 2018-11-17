@@ -35,7 +35,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 })
 
 async function find(word) {
-  let url = 'https://www.iciba.com/index.php'
+  // 金山的 https 证书有问题, 会被版本在 70 及以上的 chrome 拦截请求
+  let url = 'http://www.iciba.com/index.php'
   url = appendQueryString(url, {
     a: 'getWordMean',
     c: 'search',
