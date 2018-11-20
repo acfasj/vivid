@@ -1,5 +1,5 @@
 <template>
-  <div class="__vivid-result" v-show="show" :style="{ left: x + 'px', top: y + 'px' }">
+  <div class="__vivid-result" v-show="show" :style="{ left: x + 'px', top: y + 'px' }" :class="resultClass">
     <div class="__vivi-word">
       <div class="word-wrapper" v-show="word">
         <p class="word">{{word}}</p>
@@ -77,7 +77,8 @@ export default {
       imageData: initialImageData,
       x: 0,
       y: 0,
-      showAllColins: false
+      showAllColins: false,
+      nightMode: false
     }
   },
 
@@ -99,6 +100,11 @@ export default {
         return 'collapse'
       }
       return 'show all examples'
+    },
+    resultClass() {
+      return {
+        'night-mode': this.nightMode
+      }
     }
   },
 
@@ -118,6 +124,7 @@ export default {
 
     this._divEl = document.createElement('div') // for image html query
     this.shouldUseCtrl = this.config.shouldUseCtrl || false // only working with ctrl key
+    this.nightMode = this.config.nightMode || false // only working with ctrl key
     this.isCtrlPressing = false
     this.bindEvents()
   },
@@ -323,5 +330,5 @@ export default {
 }
 </script>
 
-<style>
+<style lang="stylus">
 </style>

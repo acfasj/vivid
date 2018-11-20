@@ -54,6 +54,18 @@
   background: rgb(2, 71, 105);
   border-radius: 2px;
 }
+#__plugin-vivid .__vivid-result.night-mode {
+  background-color: #212424;
+}
+#__plugin-vivid .__vivid-result.night-mode p {
+  color: #e1e1e1 !important;
+}
+#__plugin-vivid .__vivid-result.night-mode::-webkit-scrollbar {
+  background: rgb(80, 80, 80);
+}
+#__plugin-vivid .__vivid-result.night-mode::-webkit-scrollbar-thumb {
+  background: #212424;
+}
 
 /* word */
 #__plugin-vivid .__vivid-word {

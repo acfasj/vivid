@@ -7,9 +7,18 @@ console.log('vivid is working')
 
 let vm = null
 let vivid = null
+
+// 配置
+// 配置好像太分散了, 是不是要想点什么办法集中一下
 const defaultConfig = {
-  shouldUseCtrl: false,
-  disabledSites: []
+  shouldUseCtrl: false, // ctrl 键触发
+  disabledSites: [], // 禁用网站
+  nightMode: false, // 夜间模式
+}
+
+async function getConfig() {
+  let userConfig = await storage.get(['disabledSites', 'shouldUseCtrl', 'nightMode'])
+  return Object.assign({}, defaultConfig, userConfig)
 }
 
 function create(options = {}) {
@@ -45,8 +54,7 @@ function refresh(options) {
 }
 
 async function main() {
-  let config = await storage.get(['disabledSites', 'shouldUseCtrl'])
-  config = Object.assign(defaultConfig, config)
+  const config = await getConfig()
   console.log(config, '配置')
 
   const sites = config.disabledSites
@@ -67,12 +75,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if (request.disabled === true) {
     destroy()
   } else if (request.disabled === false) {
-    let options = {}
-    if (request.shouldUseCtrl) {
-      options.shouldUseCtrl = request.shouldUseCtrl
-    }
-    refresh(options)
-    console.log('刷新了')
+    refresh(request)
+    console.log('刷新了', request)
   }
 })
 

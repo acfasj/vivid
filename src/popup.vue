@@ -8,6 +8,10 @@
       <span class="label">Ctrl键触发</span>
       <v-toggle v-model="shouldUseCtrl"></v-toggle>
     </div>
+    <div class="row">
+      <span class="label">夜间模式</span>
+      <v-toggle v-model="nightMode"></v-toggle>
+    </div>
   </div>
 </template>
 
@@ -28,7 +32,8 @@ export default {
     return {
       // false, 默认开启; true, 禁用
       disabled: false,
-      shouldUseCtrl: false
+      shouldUseCtrl: false,
+      nightMode: false
     }
   },
 
@@ -37,12 +42,12 @@ export default {
   },
 
   async created() {
-    console.log('渲染popup 改')
     this.currentTab = await getCurrentTab()
     this.host = getHostFromURL(this.currentTab.url)
     this.disabled = await isDisabledSite(this.host)
 
     this.shouldUseCtrl = (await storage.get('shouldUseCtrl')) || false
+    this.nightMode = (await storage.get('nightMode')) || false
   },
 
   watch: {
@@ -59,6 +64,14 @@ export default {
         storage.set({ shouldUseCtrl: true })
       } else {
         storage.set({ shouldUseCtrl: false })
+      }
+      this.enable()
+    },
+    nightMode(newVal) {
+      if (newVal) {
+        storage.set({ nightMode: true })
+      } else {
+        storage.set({ nightMode: false })
       }
       this.enable()
     }
@@ -84,7 +97,8 @@ export default {
       }
       chrome.tabs.sendMessage(this.currentTab.id, {
         disabled,
-        shouldUseCtrl: this.shouldUseCtrl
+        shouldUseCtrl: this.shouldUseCtrl,
+        nightMode: this.nightMode
       })
     }
   }
