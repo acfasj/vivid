@@ -5,7 +5,7 @@
       <v-toggle v-model="disabled"></v-toggle>
     </div>
     <div class="row">
-      <span class="label">Ctrl键触发</span>
+      <span class="label">Alt键触发</span>
       <v-toggle v-model="shouldUseCtrl"></v-toggle>
     </div>
     <div class="row">

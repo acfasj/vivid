@@ -208,10 +208,10 @@ export default {
     },
 
     onDocumentKeyDown(e) {
-      if (e.ctrlKey && !this.isCtrlPressing) {
+      // ctrlKey => altKey, 不然复制粘贴太麻烦
+      if (e.altKey && !this.isCtrlPressing) {
         this.isCtrlPressing = true
       }
-      console.log('按下', this.isCtrlPressing)
     },
 
     onDocumentKeyUp(e) {
