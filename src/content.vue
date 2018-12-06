@@ -303,22 +303,30 @@ export default {
       str = str.replace(reg, '')
       this._divEl.innerHTML = str
       const aTags = this._divEl.querySelectorAll('.iusc')
-      const value = Array.from(aTags)
-        .slice(0, 10)
-        .map(a => {
-          const item = {}
-          const mad = JSON.parse(a.getAttribute('mad'))
-          if (mad.turl.startsWith('/')) {
-            item.thumbnailUrl = 'https://cn.bing.com' + mad.turl
-          } else {
-            item.thumbnailUrl = mad.turl
-          }
-          item.width = +mad.maw
-          item.height = +mad.mah
-          item.webSearchUrl = 'https://cn.bing.com' + a.getAttribute('href')
-          item.name = a.querySelector('img').getAttribute('alt')
-          return item
-        })
+      console.log(aTags)
+      let value = []
+      try {
+        value = Array.from(aTags)
+          .slice(0, 10)
+          .map(a => {
+            const img = a.querySelector('img')
+            const item = {}
+            const mad = JSON.parse(a.getAttribute('m'))
+            if (mad.turl.startsWith('/')) {
+              item.thumbnailUrl = 'https://cn.bing.com' + mad.turl
+            } else {
+              item.thumbnailUrl = mad.turl
+            }
+            item.width = +img.width
+            item.height = +img.height
+            item.webSearchUrl = 'https://cn.bing.com' + a.getAttribute('href')
+            item.name = img.getAttribute('alt')
+            return item
+          })
+      } catch (e) {
+        console.error(e)
+      }
+
       return {
         webSearchUrl: `https://cn.bing.com/images/search?q=${encodeURIComponent(
           text
