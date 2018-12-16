@@ -1,3 +1,6 @@
+### 安装
+[Chrome 网上应用商店](https://chrome.google.com/webstore/detail/vivid/pgglodcnhjejppcahpiaklibgpiifmlo?utm_source=chrome-ntp-icon)
+
 ### 目的
 1. 英英释义
 2. 搜索相关图片并展示
